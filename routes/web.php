@@ -14,19 +14,19 @@ Route::get('/tell', function (Request $request) {
     $sleepStartEpoch = CarbonImmutable::parse('3/16/2024 04:30', 'UTC');
     $sleepSchedule = new SleepSchedule($sleepStartEpoch);
     $datetime = $request->datetime;
-    $timezone = ($request->timezone) ? $request->timezone : 'America/Chicago';
+    $timezone = ($request->timezone) ? $request->timezone : config('app.timezone_display');
 
     $timeToCheck = CarbonImmutable::parse(
         $datetime,
         $timezone
     )->timezone('UTC');
     
-    $yourDateTime = $timeToCheck->timezone($timezone);
+    $submittedDateTime = $timeToCheck->timezone($timezone);
     
     $isFriendAwake = $sleepSchedule->isFriendAwake($timeToCheck);
     
     return view('tell', [
         'isFriendAwake' => $isFriendAwake,
-        'yourDateTime' => $yourDateTime,
+        'yourDateTime' => $submittedDateTime,
     ]);
 });
